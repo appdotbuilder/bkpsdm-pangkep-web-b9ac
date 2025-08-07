@@ -1,7 +1,19 @@
 
+import { db } from '../db';
+import { downloadsTable } from '../db/schema';
+import { eq } from 'drizzle-orm';
+
 export const deleteDownload = async (id: number): Promise<boolean> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is deleting a download record from the database.
-    // Should also handle cleanup of associated files.
-    return false;
-}
+  try {
+    // Delete the download record
+    const result = await db.delete(downloadsTable)
+      .where(eq(downloadsTable.id, id))
+      .execute();
+
+    // Return true if a record was deleted, false if no record found
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    console.error('Download deletion failed:', error);
+    throw error;
+  }
+};

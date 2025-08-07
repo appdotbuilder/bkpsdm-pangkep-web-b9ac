@@ -1,6 +1,19 @@
 
+import { db } from '../db';
+import { eventsTable } from '../db/schema';
+import { eq } from 'drizzle-orm';
+
 export const deleteEvent = async (id: number): Promise<boolean> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is deleting an event from the database.
-    return false;
-}
+  try {
+    // Delete event by ID
+    const result = await db.delete(eventsTable)
+      .where(eq(eventsTable.id, id))
+      .execute();
+
+    // Return true if a row was deleted, false if no row was found
+    return (result.rowCount ?? 0) > 0;
+  } catch (error) {
+    console.error('Event deletion failed:', error);
+    throw error;
+  }
+};

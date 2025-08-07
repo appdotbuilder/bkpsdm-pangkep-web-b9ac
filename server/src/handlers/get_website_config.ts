@@ -1,14 +1,32 @@
 
+import { db } from '../db';
+import { websiteConfigTable } from '../db/schema';
 import { type WebsiteConfig } from '../schema';
+import { eq } from 'drizzle-orm';
 
 export const getWebsiteConfigByKey = async (key: string): Promise<WebsiteConfig | null> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is fetching website configuration by key (e.g., 'header_logo', 'footer_content').
-    return null;
-}
+  try {
+    const result = await db.select()
+      .from(websiteConfigTable)
+      .where(eq(websiteConfigTable.key, key))
+      .execute();
+
+    return result[0] || null;
+  } catch (error) {
+    console.error('Website config fetch by key failed:', error);
+    throw error;
+  }
+};
 
 export const getAllWebsiteConfig = async (): Promise<WebsiteConfig[]> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is fetching all website configuration for admin management.
-    return [];
-}
+  try {
+    const results = await db.select()
+      .from(websiteConfigTable)
+      .execute();
+
+    return results;
+  } catch (error) {
+    console.error('Website config fetch all failed:', error);
+    throw error;
+  }
+};

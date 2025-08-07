@@ -1,14 +1,32 @@
 
+import { db } from '../db';
+import { staticContentTable } from '../db/schema';
 import { type StaticContent } from '../schema';
+import { eq } from 'drizzle-orm';
 
 export const getStaticContentByKey = async (key: string): Promise<StaticContent | null> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is fetching static content by key (e.g., 'visi_misi', 'struktur_organisasi').
-    return null;
-}
+  try {
+    const results = await db.select()
+      .from(staticContentTable)
+      .where(eq(staticContentTable.key, key))
+      .execute();
+
+    return results.length > 0 ? results[0] : null;
+  } catch (error) {
+    console.error('Static content fetch by key failed:', error);
+    throw error;
+  }
+};
 
 export const getAllStaticContent = async (): Promise<StaticContent[]> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is fetching all static content for admin management.
-    return [];
-}
+  try {
+    const results = await db.select()
+      .from(staticContentTable)
+      .execute();
+
+    return results;
+  } catch (error) {
+    console.error('Static content fetch all failed:', error);
+    throw error;
+  }
+};

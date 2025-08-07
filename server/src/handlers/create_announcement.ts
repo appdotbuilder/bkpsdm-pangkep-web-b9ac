@@ -1,18 +1,26 @@
 
+import { db } from '../db';
+import { announcementsTable } from '../db/schema';
 import { type CreateAnnouncementInput, type Announcement } from '../schema';
 
 export const createAnnouncement = async (input: CreateAnnouncementInput): Promise<Announcement> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is creating a new announcement and persisting it in the database.
-    // Should handle attachment file upload if provided.
-    return Promise.resolve({
-        id: 0, // Placeholder ID
+  try {
+    // Insert announcement record
+    const result = await db.insert(announcementsTable)
+      .values({
         title: input.title,
         description: input.description,
         publish_date: input.publish_date,
         attachment_file: input.attachment_file || null,
-        status: input.status,
-        created_at: new Date(),
-        updated_at: new Date()
-    } as Announcement);
-}
+        status: input.status
+      })
+      .returning()
+      .execute();
+
+    const announcement = result[0];
+    return announcement;
+  } catch (error) {
+    console.error('Announcement creation failed:', error);
+    throw error;
+  }
+};

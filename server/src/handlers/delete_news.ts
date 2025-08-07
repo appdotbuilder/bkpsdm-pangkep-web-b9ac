@@ -1,7 +1,19 @@
 
+import { db } from '../db';
+import { newsTable } from '../db/schema';
+import { eq } from 'drizzle-orm';
+
 export const deleteNews = async (id: number): Promise<boolean> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is deleting a news article from the database.
-    // Should also handle cleanup of associated files (featured images).
-    return false;
-}
+  try {
+    // Delete the news article
+    const result = await db.delete(newsTable)
+      .where(eq(newsTable.id, id))
+      .execute();
+
+    // Return true if a record was deleted, false if no record was found
+    return (result.rowCount ?? 0) > 0;
+  } catch (error) {
+    console.error('News deletion failed:', error);
+    throw error;
+  }
+};
